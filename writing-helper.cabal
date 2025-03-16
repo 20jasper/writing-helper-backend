@@ -32,7 +32,8 @@ executable writing-helper
     build-depends:
         base ^>=4.20.0.0,
         writing-helper,
-        scotty
+        scotty,
+        aeson
 
     hs-source-dirs:   app
     default-language: GHC2024
