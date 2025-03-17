@@ -11,10 +11,11 @@ main :: IO ()
 main = scotty 3003 $ do
   get "/" $ Web.Scotty.text "hello world"
 
-  get "/test" $
+  get "/test" $ do
+    addHeader "Access-Control-Allow-Origin" "*"
     json
       [ Line
-          "hi how's it going"
+          "hi how's it going. Hi hi hi"
           [Span 0 1 Ok, Span 1 10 Error, Span 10 99999 Ok]
       ]
 
