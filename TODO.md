@@ -1,0 +1,7 @@
+- [] write some tests
+- [] use more descriptive keys instead of list for multi grammar errors
+- [] write some more complex sentences with punctuation
+  - [] .
+  - [] —
+- [] include glue words found in error message
+- [] slam a real blog in here to test
