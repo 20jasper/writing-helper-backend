@@ -6,6 +6,8 @@ module Main where
 import Data.Aeson (ToJSON)
 import Data.Char (isLower)
 import GHC.Generics
+import MyLib (gluePercentage)
+import Text.Printf (printf)
 import Web.Scotty
 
 main :: IO ()
@@ -17,17 +19,28 @@ main = scotty 3003 $ do
     line <- jsonData :: ActionM [String]
     json $ map validateLine line
 
-validateLine :: String -> Line
-validateLine = validateCapital
+validateLine :: String -> [Line]
+validateLine xs = [validateCapital xs, validateGlue xs]
 
-uncapitalized = "Sentences should begin with a capital letter"
+rangeEnd :: Int
+rangeEnd = 999999999
+
+validateGlue :: String -> Line
+validateGlue xs
+  | gluePercentage xs > 60 = line err
+  | otherwise = line Nothing
+  where
+    line x = Line xs [Span 0 rangeEnd x]
+    err = Just $ printf "Glue percentage too high: %.1f%%" $ gluePercentage xs
 
 validateCapital :: [Char] -> Line
 validateCapital all@(x : _)
   | isLower x =
       let len = length (takeWhile (/= ' ') all)
-       in Line all [Span 0 len (Just uncapitalized), Span len 999999 Nothing]
+       in Line all [Span 0 len err, Span len 999999 Nothing]
   | otherwise = Line all [Span 0 9999 Nothing]
+  where
+    err = Just "Sentences should begin with a capital letter"
 validateCapital [] = Line "" [Span 0 0 Nothing]
 
 -- I want to measure readability per clause and per sentence
